@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  REGISTRY: devops
+  REGISTRY: ghrc.io
   IMAGE_NAME: api:$(date +%s)
   
 jobs:
