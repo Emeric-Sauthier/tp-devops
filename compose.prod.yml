@@ -1,19 +1,20 @@
-# Use postgres/example user/password credentials
-
 services:
 
   db:
     image: postgres
     restart: always
-    # set shared memory limit when using docker compose
     shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
     volumes:
       - db-data:/dev/shm
     environment:
       POSTGRES_PASSWORD: postgres
     networks:
       - back
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer
@@ -31,6 +32,8 @@ services:
       - 3000:3000
     volumes:
       - ./server/src/:/app/src
+    depends_on:
+      - db
 
 networks:
   back:
