@@ -43,5 +43,3 @@ COPY --from=build /app/dist ./dist
 COPY package.json ./package.json
 
 CMD yarn start
-
-#TEST CI
