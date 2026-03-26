@@ -1,8 +1,9 @@
+# Use postgres/example user/password credentials
+
 services:
 
   db:
     image: postgres
-    container_name: database
     restart: always
     # set shared memory limit when using docker compose
     shm_size: 128mb
@@ -16,7 +17,6 @@ services:
 
   adminer:
     image: adminer
-    container_name: adminer
     restart: always
     networks:
       - back
@@ -24,14 +24,13 @@ services:
       - 8080:8080
 
   api:
-    image: api:v1
-    container_name: api
+    image: ghcr.io/emeric-sauthier/tp-devops-server:main
     networks:
       - back
     ports:
       - 3000:3000
     volumes:
-      - ./src/:/app/src
+      - ./server/src/:/app/src
 
 networks:
   back:
