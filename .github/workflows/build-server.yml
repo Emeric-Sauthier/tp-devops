@@ -1,4 +1,4 @@
-name: Server's image - Build and Push
+name: Backend - Build and Push
 
 on:
   push:
