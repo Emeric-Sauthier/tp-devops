@@ -21,6 +21,7 @@ COPY package.json ./package.json
 COPY --from=dev /app/node_modules ./node_modules
 COPY src ./src
 COPY tsconfig.json ./tsconfig.json
+
 RUN yarn build
 
 
