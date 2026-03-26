@@ -31,6 +31,7 @@ FROM node:25.6.1-alpine3.23 AS deps
 WORKDIR /app
 
 COPY package.json ./package.json
+
 RUN yarn --production=true
 
 
