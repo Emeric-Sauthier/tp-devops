@@ -4,13 +4,31 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  REGISTRY: devops
+  
 jobs:
 
-  build:
+  build-and-push:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout main
+      uses: actions/checkout@main
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      
     - name: Build the Docker image
       run: docker build ./server/ --file ./server/Dockerfile --tag api:$(date +%s)
