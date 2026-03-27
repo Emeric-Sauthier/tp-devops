@@ -78,12 +78,12 @@ jobs:
           echo "Was a new release published? ${{ steps.semantic.outputs.new_release_published }}"
 
   build-and-push:
-    needs: versioning
+    needs: [versioning, detect-changes]
     if: ${{ needs.versioning.outputs.new_release_published == 'true' && needs.detect-changes.outputs.changed != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: ${{ needs.detect-changes.outputs.changed }}
+        project: ${{ fromJSON(needs.detect-changes.outputs.changed) }}
 
     permissions:
       contents: read
