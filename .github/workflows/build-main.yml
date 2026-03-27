@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: ${{ fromJSON(needs.detect-changes.outputs.changed) }}
+        project: ${{ needs.detect-changes.outputs.changed }}
 
     permissions:
       contents: read
