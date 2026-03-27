@@ -2,4 +2,3 @@
 nodes_modules
 Dockerfile
 .dockerignore
-test.fr
