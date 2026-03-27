@@ -14,5 +14,4 @@ app.use((_, res) => {
   res.status(404).send();
 });
 
-// return HTTP 500 if an error is thrown
 export default app;
