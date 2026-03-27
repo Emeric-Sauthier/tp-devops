@@ -10,8 +10,27 @@ env:
   
 jobs:
 
+  detect-directory-changes:
+    name: "Detect Directory Changes"
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.detect.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Detect Directory Changes
+        id: detect
+        uses: tchupp/actions-detect-directory-changes@v1
+        with:
+          included-paths: "!.github/**"
+          if-theses-paths-change-return-all-included-paths: [ "server/**", "client/**" ]
+
   build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJSON(needs.detect-directory-changes.outputs.changed) }}
 
     permissions:
       contents: read
@@ -30,12 +49,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Extract metadata (tags, labels) for Docker
+    - name: Extract metadata (tags, labels) for Docker - ${{ matrix.project }}
       if: github.ref_name == 'main'
       id: meta
       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/${{ matrix.project }}
         tags: |
           type=sha
           type=semver,pattern=v{{version}}
@@ -43,17 +62,7 @@ jobs:
           type=semver,pattern=v{{major}}
           type=raw,value=latest
 
-    - name: Tag Docker image with git commit SHA
-      if: github.ref_name == 'dev'
-      id: meta
-      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-dev
-        tags: |
-          type=sha
-          type=raw,value=lastest
-
-    - name: Build and push Docker image
+    - name: Build and push Docker image - ${{ matrix.project }}
       id: push
       uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
       with:
@@ -62,9 +71,9 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
-    - name: Generate artifact attestation
+    - name: Generate artifact attestation - ${{ matrix.project }}
       uses: actions/attest@v4
       with:
-        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+        subject-name: ${{ env.REGISTRY }}/${{ matrix.project }}
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
