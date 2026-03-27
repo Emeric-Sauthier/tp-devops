@@ -26,9 +26,9 @@ jobs:
         with:
           filters: |
             server:
-              - 'server/**'
+              - './server/**'
             client:
-              - 'client/**'
+              - './client/**'
       
       - name: Convert to list
         id: set-matrix
@@ -101,11 +101,13 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.project }}
         tags: |
-          type=sha
-          type=semver,pattern=v{{version}}
-          type=semver,pattern=v{{major}}.{{minor}}
-          type=semver,pattern=v{{major}}
+          type=raw,value=${{ needs.versioning.outputs.new_release_version }}
+          type=raw,value=${{ env.MAJOR_MINOR }}
+          type=raw,value=${{ env.MAJOR }}
           type=raw,value=latest
+      env:
+        MAJOR_MINOR: ${{ join(slice(split(needs.versioning.outputs.new_release_version, '.'), 0, 2), '.') }}
+        MAJOR: ${{ split(needs.versioning.outputs.new_release_version, '.')[0] }}
 
     - name: Build and push Docker image - ${{ matrix.project }}
       id: push
