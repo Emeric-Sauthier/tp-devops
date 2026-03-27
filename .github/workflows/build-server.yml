@@ -33,7 +33,7 @@ jobs:
 
   build-and-push:
     needs: detect-directory-changes
-    if: ${{ needs.detect-directory-changes.outputs.changed != '' }}
+    if: ${{ needs.detect-directory-changes.outputs.changed != '' && needs.detect-directory-changes.outputs.changed != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
