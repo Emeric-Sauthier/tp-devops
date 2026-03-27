@@ -101,13 +101,11 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.project }}
         tags: |
-          type=raw,value=${{ needs.versioning.outputs.new_release_version }}
-          type=raw,value=${{ env.MAJOR_MINOR }}
-          type=raw,value=${{ env.MAJOR }}
+          type=semver,pattern={{version}},value=${{ needs.versioning.outputs.new_release_version }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ needs.versioning.outputs.new_release_version }}
+          type=semver,pattern={{major}},value=${{ needs.versioning.outputs.new_release_version }}
           type=raw,value=latest
-      env:
-        MAJOR_MINOR: ${{ join(slice(split(needs.versioning.outputs.new_release_version, '.'), 0, 2), '.') }}
-        MAJOR: ${{ split(needs.versioning.outputs.new_release_version, '.')[0] }}
+          type=sha
 
     - name: Build and push Docker image - ${{ matrix.project }}
       id: push
