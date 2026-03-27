@@ -26,7 +26,7 @@ jobs:
         uses: tchupp/actions-detect-directory-changes@v1
         with:
           included-paths: "!.github/**"
-          if-theses-paths-change-return-all-included-paths: [ "server/**", "client/**" ]
+          if-theses-paths-change-return-all-included-paths: "server/**, client/**"
 
   build-and-push:
     runs-on: ubuntu-latest
