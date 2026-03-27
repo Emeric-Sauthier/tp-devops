@@ -30,6 +30,7 @@ jobs:
 
   build-and-push:
     runs-on: ubuntu-latest
+    if: needs.detect-directory-changes.outputs.changed != '[]'
     strategy:
       matrix:
         project: ${{ fromJSON(needs.detect-directory-changes.outputs.changed) }}
