@@ -79,7 +79,7 @@ jobs:
 
   build-and-push:
     needs: versioning
-    if: ${{ needs.versioning.outputs.new_release_published == "true" && needs.detect-changes.outputs.changed != '[]' }}
+    if: ${{ needs.versioning.outputs.new_release_published == 'true' && needs.detect-changes.outputs.changed != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
