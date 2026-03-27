@@ -2,7 +2,6 @@ name: Backend - Build and Push
 
 on:
   push:
-    branches: [ "main" ]
     paths: [ "server/**" ]
 
 env:
@@ -32,6 +31,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Extract metadata (tags, labels) for Docker
+      if: github.ref_name == 'main'
       id: meta
       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
