@@ -14,5 +14,4 @@ app.use((_, res) => {
   res.status(404).send();
 });
 
-// export the app for testing and server
 export default app;

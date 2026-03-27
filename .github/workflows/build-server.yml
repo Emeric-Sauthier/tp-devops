@@ -25,7 +25,7 @@ jobs:
         uses: tchupp/actions-detect-directory-changes@v1
         with:
           included-paths: "!.github/**"
-          if-these-paths-change-return-all-included-paths: "server/**, client/**"
+          # if-these-paths-change-return-all-included-paths: "server/**, client/**"
 
       - name: Log Changed Directories
         run: echo "Changed directories ${{ steps.detect.outputs.changed }}"
