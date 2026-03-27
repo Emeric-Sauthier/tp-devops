@@ -2,7 +2,6 @@ name: Backend - Build and Push
 
 on:
   push:
-    branches: [ "main" ]
     paths: [ "server/**" ]
 
 env:
@@ -32,6 +31,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Extract metadata (tags, labels) for Docker
+      if: github.ref_name == 'main'
       id: meta
       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
@@ -42,6 +42,16 @@ jobs:
           type=semver,pattern=v{{major}}.{{minor}}
           type=semver,pattern=v{{major}}
           type=raw,value=latest
+
+    - name: Tag Docker image with git commit SHA
+      if: github.ref_name == 'dev'
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-dev
+        tags: |
+          type=sha
+          type=raw,value=lastest
 
     - name: Build and push Docker image
       id: push
