@@ -67,6 +67,16 @@ jobs:
       - name: Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
+        with:
+          # On définit la configuration JSON directement ici
+          # Cela écrase toute tentative de chercher un package.json
+          semantic_version: 24
+          branches: |
+            ['main', 'dev']
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+            @semantic-release/github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
