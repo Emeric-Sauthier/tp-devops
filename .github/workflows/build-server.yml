@@ -11,32 +11,50 @@ env:
   
 jobs:
 
-  detect-directory-changes:
-    name: "Detect Directory Changes"
+  detect-changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      changed: ${{ steps.detect.outputs.changed }}
+      changed: ${{ steps.set-matrix.outputs.projects }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - name: Detect Directory Changes
-        id: detect
-        uses: tchupp/actions-detect-directory-changes@v1
+      - name: Filter changes
+        id: filter
+        uses: dorny/paths-filter@v3
         with:
-          included-paths: "!.github/**"
-          # if-these-paths-change-return-all-included-paths: "server/**, client/**"
+          filters: |
+            server:
+              - 'server/**'
+            client:
+              - 'client/**'
+      
+      - name: Convert to list
+        id: set-matrix
+        run: |
+          projects=()
 
-      - name: Log Changed Directories
-        run: echo "Changed directories ${{ steps.detect.outputs.changed }}"
+          if [[ "${{ steps.filter.outputs.server }}" == "true" ]]; then
+            projects+=("\"server\"")
+          fi
+
+          if [[ "${{ steps.filter.outputs.client }}" == "true" ]]; then
+            projects+=("\"client\"")
+          fi
+
+          json=$(printf '[%s]' "$(IFS=,; echo "${projects[*]}")")
+
+          echo "projects=$json" >> $GITHUB_OUTPUT
+          echo "Detected projects: $json"
 
   build-and-push:
-    needs: detect-directory-changes
-    if: ${{ needs.detect-directory-changes.outputs.changed != '[]' }}
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.changed != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: ${{ fromJSON(needs.detect-directory-changes.outputs.changed) }}
+        project: ${{ fromJSON(needs.detect-changes.outputs.changed) }}
 
     permissions:
       contents: read
