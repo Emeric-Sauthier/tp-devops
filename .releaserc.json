@@ -4,15 +4,10 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     [
-      "@semantic-release/npm",
-      {
-        "pkgRoot": "server"
-      }
-    ],
-    [
       "@semantic-release/github",
       {
         "successComment": false,
+        "failComment": false,
         "releasedLabels": false
       }
     ]
