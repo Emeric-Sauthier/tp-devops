@@ -32,8 +32,8 @@ jobs:
         run: echo "Changed directories ${{ steps.detect.outputs.changed }}"
 
   build-and-push:
+    if: ${{ needs.detect-directory-changes.outputs.changed != '[]' }}
     runs-on: ubuntu-latest
-    if: needs.detect-directory-changes.outputs.changed != []
     strategy:
       matrix:
         project: ${{ fromJSON(needs.detect-directory-changes.outputs.changed) }}
