@@ -47,39 +47,9 @@ jobs:
           echo "projects=$json" >> $GITHUB_OUTPUT
           echo "Detected projects: $json"
 
-  versioning:
+  build-and-push:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.changed != '[]' }}
-    runs-on: ubuntu-latest
-    outputs:
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
-      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
-
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Semantic Release
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          semantic_version: 24
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Log versioning result
-        run: |
-          echo "New release version: ${{ steps.semantic.outputs.new_release_version }}"
-          echo "Was a new release published? ${{ steps.semantic.outputs.new_release_published }}"
-
-  build-and-push:
-    needs: [versioning, detect-changes]
-    if: ${{ needs.versioning.outputs.new_release_published == 'true' && needs.detect-changes.outputs.changed != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -108,7 +78,7 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.project }}
         tags: |
-          type=raw,value=dev
+          type=raw,value=dev-latest
           type=sha
 
     - name: Build and push Docker image - ${{ matrix.project }}
@@ -117,7 +87,8 @@ jobs:
       with:
         context: ./${{ matrix.project }}/
         push: true
-        tags: "dev"
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation - ${{ matrix.project }}
       uses: actions/attest@v4
