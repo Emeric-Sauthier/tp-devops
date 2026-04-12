@@ -1,9 +1,9 @@
-name: Build and push images on main branch
+name: Build and push images on dev branch
 
 on:
   push:
     branches:
-      - main
+      - dev
 
 env:
   REGISTRY: ghcr.io
@@ -108,10 +108,7 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.project }}
         tags: |
-          type=semver,pattern={{version}},value=${{ needs.versioning.outputs.new_release_version }}
-          type=semver,pattern={{major}}.{{minor}},value=${{ needs.versioning.outputs.new_release_version }}
-          type=semver,pattern={{major}},value=${{ needs.versioning.outputs.new_release_version }}
-          type=raw,value=latest
+          type=raw,value=dev
           type=sha
 
     - name: Build and push Docker image - ${{ matrix.project }}
@@ -120,8 +117,7 @@ jobs:
       with:
         context: ./${{ matrix.project }}/
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: "dev"
 
     - name: Generate artifact attestation - ${{ matrix.project }}
       uses: actions/attest@v4
