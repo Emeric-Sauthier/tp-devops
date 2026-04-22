@@ -1,25 +1,13 @@
 services:
 
-  front:
-    build: ./client/
-    networks:
-      - front
-    ports:
-      - 5173:5173
-    volumes:
-      - ./client/src/:/app/src
-    depends_on:
-      - api
-
   db:
     image: postgres
     restart: always
-    # set shared memory limit when using docker compose
     shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
     volumes:
       - db-data:/dev/shm
     environment:
+      PGUSER: postgres
       POSTGRES_PASSWORD: postgres
     networks:
       - back
@@ -50,9 +38,22 @@ services:
       db:
         condition: service_healthy
 
+  front:
+    build: ./client/
+    networks:
+      - front
+    ports:
+      - 5173:5173
+    volumes:
+      - ./client/src/:/app/src
+    depends_on:
+      - api
+
 networks:
   back:
+    name: back
   front:
+    name: front
 
 volumes:
   db-data:

@@ -7,6 +7,7 @@ services:
     volumes:
       - db-data:/dev/shm
     environment:
+      PGUSER: postgres
       POSTGRES_PASSWORD: postgres
     networks:
       - back
@@ -36,9 +37,22 @@ services:
       db:
         condition: service_healthy
 
+  front:
+    image: ghcr.io/emeric-sauthier/tp-devops-client:main
+    networks:
+      - front
+    ports:
+      - 5173:5173
+    volumes:
+      - ./client/src/:/app/src
+    depends_on:
+      - api
+
 networks:
   back:
     name: back
+  front:
+    name: front
 
 volumes:
   db-data:
