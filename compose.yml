@@ -29,7 +29,6 @@ services:
     build: ./server/
     networks:
       - back
-      - front
     ports:
       - 3000:3000
     volumes:
@@ -40,20 +39,14 @@ services:
 
   front:
     build: ./client/
-    networks:
-      - front
     ports:
-      - 5173:5173
+      - 5173:3000
     volumes:
       - ./client/src/:/app/src
-    depends_on:
-      - api
 
 networks:
   back:
     name: back
-  front:
-    name: front
 
 volumes:
   db-data:

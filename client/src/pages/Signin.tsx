@@ -7,16 +7,18 @@ import { toast } from "react-hot-toast";
 
 export function SigninPage() {
   async function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    console.log("submit");
+
     e.preventDefault();
     const form = new FormData(e.target);
     const json = { email: form.get("email"), password: form.get("password") };
     const { data } = await axios.post<{ token: string }>(
-      "/api/users/tokens",
+      "http://localhost:3000/api/users/tokens",
       json,
     );
 
     if (data?.token) {
-      const meResult = await axios.get("/api/users/me", {
+      const meResult = await axios.get("http://localhost:3000/api/users/me", {
         headers: { Authorization: `Bearer ${data.token}` },
       });
 
