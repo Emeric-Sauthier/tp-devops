@@ -10,11 +10,13 @@ export function SignupPage() {
   const navigate = useNavigate();
 
   async function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    console.log("submit");
+    
     e.preventDefault();
     const form = new FormData(e.target);
     const json = { email: form.get("email"), password: form.get("password") };
     const { data } = await axios.post<{ item: { id: number } }>(
-      "/api/users",
+      "http://localhost:3000/api/users",
       json,
     );
 

@@ -16,6 +16,7 @@
     "argon2": "^0.44.0",
     "axios": "^1.13.5",
     "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.19.0",

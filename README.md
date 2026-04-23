@@ -1,5 +1,17 @@
 # My Favorite Places app
 
-This is a demo app to work arround tests and CI, you should clone this repo, remove the `.git` folder and push it to your own public repo!
+## How to use it with Docker Compose
 
-The client folder is empty, you may create an interface to communicate with the server! This is kind of a bonus
+### Production
+- Clone the project with : git clone https://github.com/Emeric-Sauthier/tp-devops.git  
+- Open a terminal and go to the project's directory  
+- Run command : docker compose up  
+
+The latest images will be downloaded and executed. After that, My Favorite Places will be ready to use.  
+
+### Dev
+- Clone the project with : git clone https://github.com/Emeric-Sauthier/tp-devops.git  
+- Open a terminal and go to the project's directory  
+- Run command : docker compose up  
+
+The images will be built (from your computer) and executed. After that, My Favorite Places will be ready to use.  

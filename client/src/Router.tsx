@@ -23,7 +23,7 @@ export function Router() {
 
   useEffect(() => {
     async function getUser() {
-      const { data } = await axios.get("/api/users/me", {
+      const { data } = await axios.get("http://localhost:3000/api/users/me", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
